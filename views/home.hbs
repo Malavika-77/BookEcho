@@ -1,0 +1,491 @@
+
+
+
+ <section class="photo-upload-form" style="margin: 20px;">
+    <h2 style="margin-bottom: 20px;">Submit a Book Photo</h2>
+    <form id="photo-form" action="/add-photo" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; flex-direction: column;">
+            <label for="photoUrl" style="margin-bottom: 5px; font-weight: bold;">Post Your Favourite</label>
+            <input type="url" id="photoUrl" name="photoUrl" placeholder="Enter the photo URL" required>
+        </div>
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Post
+        </button>
+    </form>
+</section>
+
+    <section class="photo-feed" id="photo-feed" style="margin: 20px;">
+        <h2 style="margin-bottom: 20px;">Recent Book Photos</h2>
+        {{#each photos}}
+        <div class="photo" data-id="{{_id}}" style="margin-bottom: 20px; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+            <img src="{{photoUrl}}" alt="Book Photo" style="max-width: 100px; height: auto;">
+            <button class="like-button" data-id="{{_id}}" style="cursor: pointer; color: blue; background: none; border: none; padding: 5px;">
+                Like ({{likes}})
+            </button>
+        </div>
+        {{/each}}
+    </section>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const photoForm = document.getElementById('photo-form');
+    const photoFeed = document.getElementById('photo-feed');
+
+    // Fetch and display photos on page load
+    fetch('/photos')
+        .then(response => response.json())
+        .then(data => {
+            if (data.photos) {
+                data.photos.forEach(photo => addPhotoToFeed(photo));
+            } else {
+                console.error('Error fetching photos:', data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+
+
+
+
+   photoForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const photoUrl = document.getElementById('photoUrl').value;
+    const data = { photoUrl };
+
+    fetch('/add-photo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addPhotoToFeed(data.photo);
+            photoForm.reset();
+        } else {
+            console.error('Server error:', data.message);
+            alert('Error adding photo: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Fetch error:', error));
+});
+
+    photoFeed.addEventListener('click', function(event) {
+        if (event.target.classList.contains('like-button')) {
+            const photoId = event.target.dataset.id;
+            likePhoto(photoId, event.target);
+        }
+    });
+
+    function addPhotoToFeed(photo) {
+        const photoElement = document.createElement('div');
+        photoElement.className = 'photo';
+        photoElement.dataset.id = photo._id;
+        photoElement.style.marginBottom = '20px';
+        photoElement.style.border = '1px solid #ddd';
+        photoElement.style.padding = '10px';
+        photoElement.style.borderRadius = '5px';
+        photoElement.innerHTML = `
+            <img src="${photo.photoUrl}" alt="Book Photo" style="max-width: 100px; height: auto;">
+            <button class="like-button" data-id="${photo._id}" style="cursor: pointer; color: blue; background: none; border: none; padding: 5px;">
+                Like (${photo.likes || 0})
+            </button>
+        `;
+        photoFeed.prepend(photoElement);
+    }
+
+    function likePhoto(photoId, button) {
+        fetch(`/like-photo/${photoId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.textContent = `Like (${data.likes})`;
+            } else {
+                alert('Error liking photo: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- user-actions.hbs -->
+{{#if isLoggedIn}}
+  <div class="container mt-4">
+    <div class="d-flex justify-content-center mb-3">
+      <button class="btn btn-primary me-2" id="addReviewBtn">Add Review</button>
+      <button class="btn btn-secondary" id="viewReviewBtn">View Review</button>
+    </div>
+
+    <!-- Form Container -->
+    <div id="reviewForm" class="d-none">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title mb-0">Add a Review</h5>
+        </div>
+        <div class="card-body">
+          <form action="/reviews" method="POST">
+            <div class="mb-3">
+              <label for="bookTitle" class="form-label">Book Title</label>
+              <input type="text" class="form-control" id="bookTitle" name="title" placeholder="Enter book title" required>
+            </div>
+            <div class="mb-3">
+              <label for="imgUrl" class="form-label">Image URL</label>
+              <input type="url" class="form-control" id="imgUrl" name="imgUrl" placeholder="Enter image URL (optional)">
+            </div>
+            <div class="mb-3">
+              <label for="review" class="form-label">Review</label>
+              <textarea class="form-control" id="review" name="content" rows="4" placeholder="Enter your review" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating</label>
+              <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" placeholder="Enter rating (1-5)" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+  <div id="reviewsContainer" class="d-none"></div>
+
+{{/if}}
+
+ <script>
+        document.getElementById('addReviewBtn').addEventListener('click', function() {
+            // Hide reviews container
+            document.getElementById('reviewsContainer').classList.add('d-none');
+
+            // Show review form
+            document.getElementById('reviewForm').classList.remove('d-none');
+            
+        });
+
+        
+
+
+        document.getElementById('viewReviewBtn').addEventListener('click', async function() {
+            // Hide review form
+            document.getElementById('reviewForm').classList.add('d-none');
+
+            // Fetch and display reviews
+            try {
+                const response = await fetch('/reviews');
+
+                if (response.ok) {
+                    const reviews = await response.json();
+                    displayReviewsAsCards(reviews);
+                } else {
+                    console.error('Failed to fetch reviews:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+            }
+        });
+
+        function displayReviewsAsCards(reviews) {
+            const reviewsContainer = document.getElementById('reviewsContainer');
+            reviewsContainer.innerHTML = '';
+
+            reviews.forEach(review => {
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'card mb-3';
+                reviewCard.style.borderRadius = '10px';
+                reviewCard.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+
+                reviewCard.innerHTML = `
+                   <div class="card-body p-3" style="max-width: 100%; max-height: 100%;">
+  <h5 class="card-title text-dark fw-bold" style="font-size: 1.25rem;">${review.title}</h5>
+  <p class="card-text text-secondary" style="font-size: 1rem;">${review.content}</p>
+
+  ${review.imgUrl ? `
+  <div class="text-center">
+    <img src="${review.imgUrl}" alt="Review Image" class="img-fluid mb-3 rounded" style="max-width: 100%; height: auto;">
+  </div>` : ''}
+
+  <p class="card-text text-muted small">
+    <span class="card-rating">Rating:</span> ${review.rating}<br>
+    <small class="text-muted">Posted on: ${new Date(review.createdAt).toLocaleDateString()}</small>
+  </p>
+
+  <div class="d-flex justify-content-between mt-3">
+    <button class="btn btn-warning btn-sm me-2 edit-review-btn" data-id="${review._id}" style="font-size: 0.875rem;">Edit</button>
+    <button class="btn btn-success btn-sm update-review-btn d-none" data-id="${review._id}" style="font-size: 0.875rem;">Update</button>
+    <button class="btn btn-danger btn-sm delete-review-btn" data-id="${review._id}" style="font-size: 0.875rem;">Delete</button>
+  </div>
+</div>
+
+<style>
+  @media (min-width: 992px) { /* Large screens */
+    .card-body {
+      max-width: 80%; /* Reduce width */
+      max-height: 80%; /* Reduce height */
+      margin: auto; /* Center it */
+    }
+  }
+</style>
+
+                `;
+
+                reviewsContainer.appendChild(reviewCard);
+            });
+
+            reviewsContainer.classList.remove('d-none');
+
+
+document.querySelectorAll('.delete-review-btn').forEach(button => {
+    button.addEventListener('click', async function() {
+        // Find the closest card body and then get the title
+        const cardBody = this.closest('.card-body');
+        const reviewTitle = cardBody.querySelector('.card-title').innerText.trim();
+
+        console.log('Title to delete:', reviewTitle); // Log the title to check
+
+        try {
+            const response = await fetch(`/reviews/${encodeURIComponent(reviewTitle)}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                this.closest('.card').remove(); // Remove the card from the DOM
+            } else {
+                console.error('Failed to delete review:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error deleting review:', error);
+        }
+    });
+});
+
+
+
+         // Add event listeners to the "Edit" button
+document.querySelectorAll('.edit-review-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const cardBody = this.closest('.card-body');
+        const title = cardBody.querySelector('.card-title').innerText;
+        const contentField = cardBody.querySelector('.card-text');
+        const imgUrlField = cardBody.querySelector('img');
+        const ratingField = cardBody.querySelector('.card-rating');
+        const updateButton = cardBody.querySelector('.update-review-btn');
+
+        // Make content, imgUrl, and rating editable
+        contentField.contentEditable = true;
+        contentField.style.border = '1px solid #ced4da';
+        contentField.style.padding = '5px';
+
+        if (imgUrlField) {
+            imgUrlField.contentEditable = true;
+            imgUrlField.style.border = '1px solid #ced4da';
+            imgUrlField.style.padding = '5px';
+        }
+
+        if (ratingField) {
+            ratingField.contentEditable = true;
+            ratingField.style.border = '1px solid #ced4da';
+            ratingField.style.padding = '5px';
+        }
+
+        // Show the update button
+        updateButton.classList.remove('d-none');
+
+        // Hide the edit button
+        this.classList.add('d-none');
+
+        // Store title for use in the update request
+        updateButton.setAttribute('data-title', title);
+    });
+});
+
+          // Add event listeners to the "Update" button
+document.querySelectorAll('.update-review-btn').forEach(button => {
+    button.addEventListener('click', async function() {
+        const reviewTitle = this.getAttribute('data-title');
+        const cardBody = this.closest('.card-body');
+        const content = cardBody.querySelector('.card-text').innerText;
+        const imgUrlField = cardBody.querySelector('img');
+        const imgUrl = imgUrlField ? imgUrlField.src : '';
+
+        // Extract rating from the editable field
+        const ratingElement = cardBody.querySelector('.card-rating');
+        const rating = ratingElement ? parseFloat(ratingElement.innerText) : null;
+
+        try {
+            const response = await fetch(`/reviews/${encodeURIComponent(reviewTitle)}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content, imgUrl, rating })
+            });
+
+            if (response.ok) {
+                // Make content, imgUrl, and rating non-editable again
+                cardBody.querySelector('.card-text').contentEditable = false;
+                if (imgUrlField) imgUrlField.contentEditable = false;
+                if (ratingElement) ratingElement.contentEditable = false;
+
+                // Hide the update button and show the edit button
+                this.classList.add('d-none');
+                cardBody.querySelector('.edit-review-btn').classList.remove('d-none');
+            } else {
+                console.error('Failed to update review:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating review:', error);
+        }
+    });
+});
+
+        }
+    </script>
+
+
+<div class="container mt-4">
+        <!-- News and Interviews Section -->
+        <section class="mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <img src="logo.webp" alt="News Icon" class="mr-2" style="width: 24px; height: 24px;">
+                <h2 class="mb-0">News and Interviews</h2>
+                <a href="#" class="ml-auto text-primary">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">The BookEcho Guide to Summer Reading</h3>
+                    <p class="card-text">Posted by Sharon on May 13, 2024</p>
+                    <p class="card-text">
+                        <span class="badge badge-primary">268 likes</span> · 
+                        <span class="badge badge-secondary">144 comments</span>
+                    </p>
+                    <a href="#" class="btn btn-outline-primary">Share</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+<section class="mb-5">
+     
+    <div class="container">
+        <div class="d-flex align-items-center mb-4">
+            <h2 class="mb-0 font-weight-bold text-black">The Hit Books of the Year (So Far)</h2>
+        </div>
+        <div class="card shadow-lg border-0 rounded-lg">
+            <img src="summer.png" alt="Hit Books" class="card-img-top rounded-top">
+            <div class="card-body">
+                <p class="card-text text-muted">Check out the most popular new titles, according to Goodreads members.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+ <section class="mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <h2 class="mb-0">The Most Read Books of the 2024 Reading Challenge</h2>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <img src="mostread.png" alt="Most Read Books" class="img-fluid mb-3">
+                    <p class="card-text">Get inspired with these unputdownable books.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <h2 class="mb-0">Readers' Most Anticipated Books of Summer</h2>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <img src="antibooks.png" alt="Anticipated Books" class="img-fluid mb-3">
+                    <p class="card-text">Discover the new books everyone will be talking about.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <h2 class="mb-0">Reading Roadtrip: A Book Tour of the USA</h2>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <img src="road.png" alt="Roadtrip Books" class="img-fluid mb-3">
+                    <p class="card-text">51 new novels to sweep you away on a literary adventure.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <div class="d-flex align-items-center mb-4">
+                <h2 class="mb-0">Book Recs for (Nearly) Every Kind of Summer Reader</h2>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <img src="book rec.png" alt="Summer Recs" class="img-fluid mb-3">
+                    <p class="card-text">120 titles to match all kinds of reading moods and personalities, all season long.</p>
+                </div>
+            </div>
+        </section>
+
+<section class="mb-5 additional-recommendations">
+    <h2 class="mb-4">More Great Summer Reading Awaits:</h2>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="recommendation-card">
+                <h3>The Most Anticipated Mysteries and Thrillers for Summer</h3>
+                <img src="mystery.png" alt="Mysteries and Thrillers" class="img-fluid mb-3">
+                <p class="description">Discover the most anticipated mysteries and thrillers that are set to captivate readers this summer.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="recommendation-card">
+                <h3>Summer Lovin': The Season's Hottest Romances</h3>
+                <img src="summerlove.png" alt="Summer Romances" class="img-fluid mb-3">
+                <p class="description">Dive into the season's hottest romances and find your perfect summer love read.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="recommendation-card">
+                <h3>Outta-This-World Sci-Fi, Fantasy, and Horror Summer Reads</h3>
+                <img src="horror.png" alt="Sci-Fi Fantasy Horror" class="img-fluid mb-3">
+                <p class="description">Explore thrilling sci-fi, fantasy, and horror novels that will transport you to another world.</p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="recommendation-card">
+                <h3>New YA Books to Keep Teens Reading All Season Long</h3>
+                <img src="teen.png" alt="YA Books" class="img-fluid mb-3">
+                <p class="description">Find the latest young adult books that will keep teens engaged throughout the summer.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+        
+        <section class="mb-5">
+            <h3>What are your summer reading plans?</h3>
+            <p>Share your thoughts and recommendations with us!</p>
+        </section>
+    </div>
+

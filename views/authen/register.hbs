@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookEcho - Sign Up</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom styles */
+    body {
+      background: url('homeback.webp') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Georgia, serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .signup-background {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding-top: 50px;
+    }
+
+    .signup-card {
+      background: #fff;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .signup-card-title {
+      font-size: 2rem;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .signup-card-subtitle {
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control-custom {
+      border-radius: 5px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-custom-primary {
+      background-color: #007bff;
+      border: none;
+      padding: 1rem;
+      font-size: 1.2rem;
+      border-radius: 5px;
+    }
+
+    .btn-custom-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-custom-link {
+      color: #007bff;
+    }
+
+    .btn-custom-link:hover {
+      color: #0056b3;
+    }
+
+    .logo {
+      display: block;
+      margin-bottom: 20px;
+      max-width: 120px;
+      height: auto;
+      border-radius: 50%;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      .signup-background {
+        padding-top: 20px;
+      }
+      .signup-card {
+        width: 90%;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fullscreen background -->
+  <div class="signup-background">
+    <div class="signup-card">
+      <img src="logo.webp" alt="BookEcho Logo" class="logo">
+      <h2 class="signup-card-title mb-4">BookEcho</h2>
+      <h5 class="signup-card-subtitle mb-4">Create a new account</h5>
+      <form action="/signup" method="POST">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" class="form-control form-control-custom" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control form-control-custom" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" class="form-control form-control-custom" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+        </div>
+        <button type="submit" class="btn btn-custom-primary btn-block btn-lg">Sign Up</button>
+      </form>
+      <div class="text-center mt-3">
+        <p>Already have an account? <a href="/login" class="btn btn-custom-link">Login here</a></p>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

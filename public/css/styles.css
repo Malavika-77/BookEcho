@@ -1,0 +1,140 @@
+/* Style for the secondary navbar */
+.navbar-dark.bg-dark {
+    padding: 1rem 0; /* Increase padding to make it slightly larger */
+    font-size: 1.1rem; /* Adjust font size if needed */
+}
+/* Custom styles for the Summer Reading section */
+section {
+    background-color: #f8f9fa; /* Light background for contrast */
+    padding: 2rem 0;
+}
+
+.card {
+    border: 1px solid #e0e0e0; /* Subtle border */
+    transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Slight lift on hover */
+}
+
+.card-img-top {
+    height: 500px;
+    object-fit: cover; /* Ensures the image covers the card width */
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.font-weight-bold {
+    font-weight: 700; /* Ensure the heading is bold */
+}
+
+.text-primary {
+    color: #131313; /* Primary color for the heading */
+}
+
+.text-muted {
+    color: #6c757d; /* Muted text color */
+}
+
+.shadow-lg {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Enhanced shadow for card */
+}
+
+.border-0 {
+    border: none; /* Removes default border */
+}
+
+.rounded-lg {
+    border-radius: 0.5rem; /* Rounded corners */
+}
+
+.card-img-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.card-img {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    display: block;
+}
+/* Custom styles for the Additional Recommendations section */
+.additional-recommendations {
+    padding: 2rem 0;
+    background-color: #f8f9fa; /* Light background color for contrast */
+}
+
+.additional-recommendations h2 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #343a40; /* Darker color for the main heading */
+}
+
+.recommendation-card {
+    background: #ffffff; /* White background for cards */
+    border: 1px solid #dee2e6; /* Light border for separation */
+    border-radius: 0.5rem; /* Rounded corners */
+    padding: 1.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.recommendation-card h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.recommendation-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.25rem; /* Rounded corners for images */
+}
+
+.recommendation-card .description {
+    color: #6c757d; /* Light gray color for description text */
+    font-size: 1rem;
+}
+
+@media (max-width: 767.98px) {
+    .recommendation-card {
+        padding: 1rem; /* Reduced padding for smaller screens */
+    }
+}
+
+
+/* Hide the radio buttons */
+.star-rating input {
+    display: none;
+}
+
+/* Style the stars */
+.star-rating label {
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Change color on hover */
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffdd00;
+}
+
+/* Set the color of the selected stars */
+.star-rating input:checked ~ label {
+    color: #ffdd00;
+}
+
+/* Ensure selected star and all preceding stars are colored */
+.star-rating input:checked + label,
+.star-rating input:checked + label ~ label {
+    color: #ffdd00;
+}
+
+
+
+

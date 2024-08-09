@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Review Platform</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: Georgia, serif;
+    }
+    
+    .navbar-brand img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .navbar-brand h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .navbar-text {
+      text-align: center;
+      font-size: 16px;
+      margin-left: 300px;
+    }
+
+    .navbar-nav .nav-link {
+      margin: 0 5px;
+    }
+
+    .navbar-nav .nav-link.btn {
+      width: 120px;
+    }
+
+    @media (max-width: 768px) {
+      .navbar-text {
+        display: none;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .navbar-nav .nav-link {
+        margin: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">
+      <img src="logo.webp" alt="BookEcho Logo">
+      <h2>BookEcho</h2>
+    </a>
+    <div class="navbar-text d-none d-lg-block">
+      Where every book finds its voice and every review shapes a reader's journey.
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      {{#if isLoggedIn}}
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-primary" href="/logout">Signout</a>
+        </li>
+      </ul>
+      {{else}}
+      {{#unless hidehomeLink}}
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-primary" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-primary text-white" href="/join">Join</a>
+        </li>
+      </ul>
+      {{/unless}}
+      {{/if}}
+    </div>
+  </nav>
+
+  <!-- Secondary Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mt-3">
+    <div class="container">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav2" aria-controls="navbarNav2" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav2">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/my-books">My Books</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownBrowse2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Browse
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownBrowse2">
+              <a class="dropdown-item" href="#">Genre</a>
+              <a class="dropdown-item" href="#">New Releases</a>
+              <a class="dropdown-item" href="#">Best Sellers</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">More</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownCommunity2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Community
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownCommunity2">
+              <a class="dropdown-item" href="#">Forums</a>
+              <a class="dropdown-item" href="#">Groups</a>
+              <a class="dropdown-item" href="#">Events</a>
+            </div>
+          </li>
+    
+
+
+          <!-- Search Bar -->
+          <li class="nav-item">
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mt-4">
+    {{{body}}}
+  </main>
+
+   <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Quick Links -->
+                <div class="col-md-6 col-lg-3 mb-3 mb-md-0">
+                    <h5 class="text-uppercase">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light">Home</a></li>
+                        <li><a href="/my-books" class="text-light">My Books</a></li>
+                        <li><a href="/browse" class="text-light">Browse</a></li>
+                        <li><a href="/community" class="text-light">Community</a></li>
+                        <li><a href="/search-books" class="text-light">Search Books</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="col-md-6 col-lg-3 mb-3 mb-md-0">
+                    <h5 class="text-uppercase">Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="mailto:support@bookecho.com" class="text-light">support@bookecho.com</a></li>
+                        <li><a href="tel:+1234567890" class="text-light">+1 (416) 123-4567</a></li>
+                        <li>123 Book Street, Library City, Canada</li>
+                    </ul>
+                </div>
+
+                <!-- Follow Us -->
+                <div class="col-md-6 col-lg-3 mb-3 mb-md-0">
+                    <h5 class="text-uppercase">Follow Us</h5>
+                    <ul class="list-unstyled d-flex flex-wrap">
+                        <li class="mr-3 mb-2">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-facebook-f"></i> <!-- FontAwesome Facebook icon -->
+                            </a>
+                        </li>
+                        <li class="mr-3 mb-2">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-twitter"></i> <!-- FontAwesome Twitter icon -->
+                            </a>
+                        </li>
+                        <li class="mr-3 mb-2">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-instagram"></i> <!-- FontAwesome Instagram icon -->
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-linkedin-in"></i> <!-- FontAwesome LinkedIn icon -->
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter Signup -->
+                <div class="col-md-6 col-lg-3 mb-3 mb-md-0">
+                    <h5 class="text-uppercase">Newsletter</h5>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="text-center mt-4">
+                <p class="mb-0">&copy; {{currentYear}} BookEcho. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
